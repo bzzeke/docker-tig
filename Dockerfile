@@ -4,6 +4,9 @@ ENV TELEGRAF_VERSION 1.9.1
 ENV INFLUXDB_VERSION 1.7.2
 ENV GRAFANA_VERSION 5.4.2
 
+WORKDIR /app
+VOLUME /app
+
 RUN apk add --no-cache iputils py-pip
 RUN pip install speedtest-cli
 
