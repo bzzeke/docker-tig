@@ -1,13 +1,16 @@
 FROM alpine:latest
 
-ENV TELEGRAF_VERSION 1.9.1
-ENV INFLUXDB_VERSION 1.7.2
-ENV GRAFANA_VERSION 5.4.2
+ARG STORAGE_UID
+ARG STORAGE_GID
+
+ENV TELEGRAF_VERSION 1.11.0
+ENV INFLUXDB_VERSION 1.7.6
+ENV GRAFANA_VERSION 6.2.4
 
 WORKDIR /app
 VOLUME /app
 
-RUN apk add --no-cache iputils py-pip
+RUN apk add --no-cache iputils py-pip tzdata
 RUN pip install speedtest-cli
 
 # Install telegraf and influxdb (# Install influxdb
@@ -63,8 +66,8 @@ EXPOSE 8083 8086
 # Install grafana
 # https://github.com/orangesys/alpine-grafana/blob/master/4.2.0/Dockerfile
 RUN set -ex \
- && addgroup -S grafana \
- && adduser -S -G grafana grafana \
+ && addgroup -g ${STORAGE_GID} -S grafana \
+ && adduser -u ${STORAGE_UID} -g ${STORAGE_GID} -S grafana \
  && apk add --no-cache libc6-compat ca-certificates su-exec \
  && mkdir /tmp/setup \
  && wget -P /tmp/setup http://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-${GRAFANA_VERSION}.linux-amd64.tar.gz \
